@@ -1,16 +1,21 @@
 use anyhow::{Context, Result, anyhow};
+use hashbrown::HashSet;
+use parking_lot::RwLock;
+use scopeguard::defer;
 use tokio::{io::{self, ErrorKind::NotFound}, sync::mpsc};
 use yazi_fs::{Cwd, FsHash128, FsUrl, engine::{Attrs, Engine, FileHolder, local::Local}, ok_or_not_found, path::path_relative_to, stat::Stat};
 use yazi_macro::{ok_or_not_found, warn};
-use yazi_shared::{path::{PathCow, PathLike}, url::{AsUrl, UrlCow, UrlLike}};
+use yazi_shared::{id::Id, path::{PathCow, PathLike}, url::{AsUrl, UrlBuf, UrlCow, UrlLike}};
 use yazi_vfs::{Stamp, VfsStat, engine::{self, DirEntry, RwFile}, unique_dir, unique_file};
 
 use super::{FileInCopy, FileInDelete, FileInHardlink, FileInLink, FileInTrash};
 use crate::{LOW, NORMAL, TaskOp, TaskOps, TasksProxy, ctx, ctx_or_not_found, file::{FileIn, FileInDownload, FileInMove, FileInUpload, FileOutCopy, FileOutCopyDo, FileOutDelete, FileOutDownload, FileOutDownloadDo, FileOutHardlink, FileOutHardlinkDo, FileOutLink, FileOutMove, FileOutMoveDo, FileOutTrash, FileOutUpload, FileOutUploadDo, Transaction, Traverse}, hook::{HookInOutCopy, HookInOutHardlink, HookInOutLink, HookInOutMove}};
 
-pub(crate) struct File {
+pub struct File {
 	ops: TaskOps,
 	tx:  async_priority_channel::Sender<FileIn, u8>,
+
+	pub writing: RwLock<HashSet<UrlBuf>>,
 }
 
 impl File {
@@ -18,7 +23,7 @@ impl File {
 		ops: &mpsc::UnboundedSender<TaskOp>,
 		tx: async_priority_channel::Sender<FileIn, u8>,
 	) -> Self {
-		Self { ops: ops.into(), tx }
+		Self { ops: ops.into(), tx, writing: Default::default() }
 	}
 
 	pub(crate) async fn copy(&self, mut task: FileInCopy) -> Result<(), FileOutCopy> {
@@ -62,6 +67,9 @@ impl File {
 
 	pub(crate) async fn copy_do(&self, task: FileInCopy) -> Result<(), FileOutCopyDo> {
 		ctx_or_not_found!(task, Transaction::unlink(&task.to).await);
+
+		self.writing.write().insert(task.to.clone());
+		defer!(self.written(task.id, &task.to));
 		let mut rx = ctx!(task, engine::copy(&task.from, &task.to, task.stat.unwrap()).await)?;
 
 		while let Some(result) = rx.recv().await {
@@ -145,6 +153,9 @@ impl File {
 
 	pub(crate) async fn move_do(&self, task: FileInMove) -> Result<(), FileOutMoveDo> {
 		ctx_or_not_found!(task, Transaction::unlink(&task.to).await);
+
+		self.writing.write().insert(task.to.clone());
+		defer!(self.written(task.id, &task.to));
 		let mut rx = ctx!(task, engine::copy(&task.from, &task.to, task.stat.unwrap()).await)?;
 
 		while let Some(result) = rx.recv().await {
@@ -409,6 +420,12 @@ impl File {
 		ctx!(task, Stamp::write(stat, task.target.as_url()).await)?;
 
 		Ok(self.ops.out(task.id, FileOutUploadDo::Succ))
+	}
+
+	// Report the finished file, so the fetchers and preloaders skipped while it was being written run once
+	fn written(&self, id: Id, to: &UrlBuf) {
+		self.writing.write().remove(to);
+		TasksProxy::update_succeed(id, [to], false);
 	}
 
 	pub(super) async fn dstat<U>(url: U, follow: bool, dent: Option<DirEntry>) -> io::Result<Stat>
