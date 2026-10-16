@@ -8,10 +8,11 @@ use crate::{mgr::Mimetype, tab::Tab};
 impl Tasks {
 	pub fn fetch_paged(&self, tab: &Tab, paged: &[File], mimetype: &Mimetype) {
 		let fetchers = YAZI.plugin.fetchers.load_full();
+		let writing = self.scheduler.file.writing.read();
 		let mut loaded = self.scheduler.fetch.loaded.lock();
 		let mut tasks: [(Files, Vec<_>); MAX_FETCHERS as usize] = Default::default();
 
-		for f in paged {
+		for f in paged.iter().filter(|f| !writing.contains(&f.url)) {
 			let hash = FileSig(f).hash_u64();
 			for g in FetcherMatcher::new(&fetchers, f, mimetype.get(&f.url).unwrap_or_default()) {
 				if loaded.get_or_insert_mut(hash, Loaded::default).mark(g.idx, g.rev) {
@@ -22,7 +23,7 @@ impl Tasks {
 			}
 		}
 
-		drop(loaded);
+		drop((loaded, writing));
 
 		for (i, (targets, hashes)) in tasks.into_iter().enumerate() {
 			if !targets.is_empty() {
@@ -32,8 +33,9 @@ impl Tasks {
 	}
 
 	pub fn preload_paged(&self, tab: &Tab, paged: &[File], mimetype: &Mimetype) {
+		let writing = self.scheduler.file.writing.read();
 		let mut loaded = self.scheduler.preload.loaded.lock();
-		for f in paged {
+		for f in paged.iter().filter(|f| !writing.contains(&f.url)) {
 			let hash = FileSig(f).hash_u64();
 			let mime = mimetype.get(&f.url).unwrap_or_default();
 			for p in YAZI.plugin.preloaders.matches(f, mime) {
