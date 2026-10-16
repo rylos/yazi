@@ -21,6 +21,7 @@ impl From<CustomProg> for TaskSummary {
 				success: value.success,
 				failed:  value.failed,
 				percent: value.percent().map(Into::into),
+				..Default::default()
 			}
 		} else {
 			Self {
@@ -28,6 +29,7 @@ impl From<CustomProg> for TaskSummary {
 				success: value.success() as u32,
 				failed:  value.failed() as u32,
 				percent: None,
+				..Default::default()
 			}
 		}
 	}

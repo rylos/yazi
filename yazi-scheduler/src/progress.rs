@@ -144,6 +144,17 @@ impl Progress for TaskProg {
 }
 
 impl TaskProg {
+	// Processed and total bytes of a transfer
+	pub(crate) fn transfer(self) -> Option<(u64, u64)> {
+		match self {
+			Self::FileCopy(p) => Some((p.processed_bytes, p.total_bytes)),
+			Self::FileMove(p) => Some((p.processed_bytes, p.total_bytes)),
+			Self::FileDownload(p) => Some((p.processed_bytes, p.total_bytes)),
+			Self::FileUpload(p) => Some((p.processed_bytes, p.total_bytes)),
+			_ => None,
+		}
+	}
+
 	pub(crate) fn is_user(self) -> bool {
 		match self {
 			// File

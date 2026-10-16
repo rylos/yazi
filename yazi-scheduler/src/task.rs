@@ -3,7 +3,7 @@ use std::ops::Deref;
 use tokio::sync::mpsc;
 use yazi_shared::id::Id;
 
-use crate::{TaskHandle, TaskIn, TaskProg, hook::HookIn};
+use crate::{Meter, TaskHandle, TaskIn, TaskProg, hook::HookIn};
 
 #[derive(Debug)]
 pub struct Task {
@@ -11,6 +11,7 @@ pub struct Task {
 	pub title:         String,
 	pub(crate) prog:   TaskProg,
 	pub(crate) hook:   Option<HookIn>,
+	pub(crate) meter:  Meter,
 
 	pub logs:   String,
 	pub logger: Option<mpsc::UnboundedSender<String>>,
@@ -29,6 +30,7 @@ impl Task {
 			title,
 			prog,
 			hook: None,
+			meter: Default::default(),
 
 			logs: Default::default(),
 			logger: Default::default(),

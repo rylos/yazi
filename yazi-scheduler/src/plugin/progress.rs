@@ -15,6 +15,7 @@ impl From<PluginProgEntry> for TaskSummary {
 			success: value.success() as u32,
 			failed:  value.failed() as u32,
 			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }

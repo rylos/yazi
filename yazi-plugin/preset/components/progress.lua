@@ -11,10 +11,11 @@ end
 function Progress:use(area) return setmetatable({ _area = area }, { __index = self }) end
 
 function Progress:layout()
+	local width = cx.tasks.summary.speed > 0 and 32 or 20
 	self._area = ui.Rect {
-		x = math.max(0, self._area.w - self._offset - 21),
+		x = math.max(0, self._area.w - self._offset - width - 1),
 		y = self._area.y,
-		w = ya.clamp(0, self._area.w - self._offset - 1, 20),
+		w = ya.clamp(0, self._area.w - self._offset - 1, width),
 		h = math.min(1, self._area.h),
 	}
 end
@@ -39,6 +40,15 @@ function Progress:redraw()
 		label = string.format("%3d%%, ", math.floor(percent))
 	else
 		percent = 0
+	end
+
+	if summary.speed > 0 then
+		label = string.format(
+			"%s%s/s, %s, ",
+			label,
+			ya.readable_size(summary.speed),
+			ya.readable_duration(summary.left / summary.speed)
+		)
 	end
 
 	label = label .. string.format("%d left", summary.total - summary.success)

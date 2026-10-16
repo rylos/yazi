@@ -48,6 +48,14 @@ impl Ongoing {
 		Some(task)
 	}
 
+	pub fn measure(&mut self) {
+		for task in self.inner.values_mut() {
+			if let Some((processed, _)) = task.prog.transfer() {
+				task.meter.sample(processed);
+			}
+		}
+	}
+
 	#[inline]
 	pub fn get_mut(&mut self, id: Id) -> Option<&mut Task> { self.inner.get_mut(&id) }
 

@@ -79,6 +79,12 @@ function Tasks:progress(snap)
 	if p.total_bytes then
 		local percent = snap.running and snap.cooked and "Cleaning…" or string.format("%3d%%", math.floor(snap.percent))
 		label = string.format("%s - %s / %s", percent, ya.readable_size(p.processed_bytes), ya.readable_size(p.total_bytes))
+		if snap.speed == 0 and p.processed_bytes > 0 then
+			label = label .. " - 0B/s"
+		elseif snap.speed and snap.speed > 0 then
+			local left = math.max(0, p.total_bytes - p.processed_bytes) / snap.speed
+			label = string.format("%s - %s/s, %s left", label, ya.readable_size(snap.speed), ya.readable_duration(left))
+		end
 		count = string.format("%d/%d", p.success_files, p.total_files)
 		count = p.failed_files == 0 and count or string.format("%s, %d failed", count, p.failed_files)
 		failed = snap.failed or p.failed_files > 0

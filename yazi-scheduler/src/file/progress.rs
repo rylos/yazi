@@ -21,6 +21,7 @@ impl From<FileProgCopy> for TaskSummary {
 			success: value.success_files,
 			failed:  value.failed_files,
 			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -62,6 +63,7 @@ impl From<FileProgMove> for TaskSummary {
 			success: value.success_files,
 			failed:  value.failed_files,
 			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -98,6 +100,7 @@ impl From<FileProgLink> for TaskSummary {
 			success: value.success() as u32,
 			failed:  value.failed() as u32,
 			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -129,6 +132,7 @@ impl From<FileProgHardlink> for TaskSummary {
 			success: value.success,
 			failed:  value.failed,
 			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -164,6 +168,7 @@ impl From<FileProgDelete> for TaskSummary {
 			success: value.success_files,
 			failed:  value.failed_files,
 			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -200,6 +205,7 @@ impl From<FileProgTrash> for TaskSummary {
 			success: value.success() as u32,
 			failed:  value.failed() as u32,
 			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -233,6 +239,7 @@ impl From<FileProgDownload> for TaskSummary {
 			success: value.success_files,
 			failed:  value.failed_files,
 			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -274,6 +281,7 @@ impl From<FileProgUpload> for TaskSummary {
 			success: value.success_files,
 			failed:  value.failed_files,
 			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }

@@ -35,6 +35,17 @@ function ya.readable_size(size)
 	return s
 end
 
+function ya.readable_duration(secs)
+	secs = math.ceil(secs)
+	if secs >= 3600 then
+		return string.format("%dh%02dm", secs // 3600, secs % 3600 // 60)
+	elseif secs >= 60 then
+		return string.format("%dm%02ds", secs // 60, secs % 60)
+	else
+		return string.format("%ds", secs)
+	end
+end
+
 function ya.readable_path(path)
 	local home = os.getenv("HOME") or os.getenv("USERPROFILE")
 	if not home then

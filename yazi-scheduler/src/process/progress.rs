@@ -15,6 +15,7 @@ impl From<ProcessProgBlock> for TaskSummary {
 			success: 0,
 			failed:  value.failed() as u32,
 			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -40,6 +41,7 @@ impl From<ProcessProgOrphan> for TaskSummary {
 			success: 0,
 			failed:  value.failed() as u32,
 			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -65,6 +67,7 @@ impl From<ProcessProgBg> for TaskSummary {
 			success: value.success() as u32,
 			failed:  value.failed() as u32,
 			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
