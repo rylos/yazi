@@ -37,6 +37,7 @@ lru                    = { workspace = true }
 mlua                   = { workspace = true }
 ordered-float          = { workspace = true }
 parking_lot            = { workspace = true }
+scopeguard             = { workspace = true }
 serde                  = { workspace = true }
 strum                  = { workspace = true }
 tokio                  = { workspace = true }
