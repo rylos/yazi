@@ -5608,6 +5608,7 @@ dependencies = [
  "ordered-float 5.5.0",
  "parking_lot",
  "rustix",
+ "scopeguard",
  "serde",
  "strum 0.28.0",
  "tokio",

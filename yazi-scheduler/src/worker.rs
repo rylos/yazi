@@ -8,7 +8,7 @@ use crate::{LOW, Ongoing, Progress, TaskIn, TaskOp, TaskOps, TaskOut, custom::Cu
 
 #[derive(Clone)]
 pub struct Worker {
-	pub(super) file:    Arc<File>,
+	pub file:           Arc<File>,
 	pub(super) plugin:  Arc<Plugin>,
 	pub fetch:          Arc<Fetch>,
 	pub preload:        Arc<Preload>,
