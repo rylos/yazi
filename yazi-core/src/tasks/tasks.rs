@@ -25,7 +25,7 @@ impl Tasks {
 		let handle = tokio::spawn(async move {
 			let mut last = TaskSummary::default();
 			loop {
-				sleep(Duration::from_millis(500)).await;
+				sleep(Duration::from_millis(250)).await;
 
 				let new = {
 					let mut ongoing = ongoing.lock();
