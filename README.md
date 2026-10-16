@@ -6,6 +6,20 @@
 
 </div>
 
+## ✨ Yazi Enhanced
+
+A personal fork of [sxyazi/yazi](https://github.com/sxyazi/yazi) that tracks upstream `main` and adds a few quality-of-life features. The `enhanced` branch is the upstream `main` plus the commits below, and it builds the same `yazi` and `ya` binaries.
+
+| Feature | What it does |
+| --- | --- |
+| 📈 **Transfer speed and ETA** | Copy, move, download and upload tasks show their speed and time left in the task manager (<kbd>w</kbd>), and the status bar shows the overall speed and ETA, so you don't need to open the task manager. The scheduler measures speed over a 5s window and only between progress changes, so bursty transfers (SFTP to a USB drive) give a steady value, and a stalled task shows `0B/s`. Progress refreshes every 250ms instead of 500ms. |
+| 🔎 **Search on SFTP** | <kbd>s</kbd> (`fd` plugin) works on SFTP directories too: the remote tree is walked breadth-first through Yazi's VFS, matching names by smart-case substring (no regex, since `fd` can't run remotely). |
+| 🧊 **No refetching on files being written** | While a copy or move writes a file, the MIME fetchers and preloaders skip it, instead of rerunning each time the growing file changes. When the transfer ends, even if it is cancelled or fails, the file is reported once so that they run on the final file. |
+
+Build from source with `cargo build --release --locked`; the binaries are in `target/release/`.
+
+---
+
 ## Yazi - ⚡️ Blazing Fast Terminal File Manager
 
 Yazi (means "duck") is a terminal file manager written in Rust, based on non-blocking async I/O. It aims to provide an efficient, user-friendly, and customizable file management experience.
