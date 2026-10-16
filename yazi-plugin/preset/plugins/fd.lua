@@ -15,8 +15,8 @@ function M:entry(job)
 	local source = root.physical
 	if not source.is_absolute then
 		return warn("Invalid search root")
-	elseif not source.spec.is_regular then
-		return warn("Only local filesystem searches are supported")
+	elseif not source.spec.is_regular and source.spec.kind ~= "sftp" then
+		return warn("Only local and SFTP searches are supported")
 	end
 
 	local subject, event = ya.input {
@@ -66,8 +66,10 @@ function M:provide(job)
 
 	return ya.co(function()
 		local source = job.url.physical
-		if not source.spec.is_regular then
-			return nil, Err("Only local filesystem searches are supported")
+		if source.spec.kind == "sftp" then
+			return M.walk(job.url, source, job.url.spec.data)
+		elseif not source.spec.is_regular then
+			return nil, Err("Only local and SFTP searches are supported")
 		end
 
 		local child, err = M.spawn("fd", source, job.url.spec.data)
@@ -95,6 +97,32 @@ function M:provide(job)
 
 		child:wait()
 	end)
+end
+
+-- Without a local `fd`, remote trees are walked breadth-first, matching names by smart-case substring
+function M.walk(url, source, data)
+	local subject = data[1]
+	local folded = subject == subject:lower()
+
+	local queue, i = { "" }, 1
+	while i <= #queue do
+		local rel = queue[i]
+		i = i + 1
+
+		local files = fs.read_dir(rel == "" and source or source:join(rel), { resolve = true }) or {}
+		for _, f in ipairs(files) do
+			local name = f.name
+			if data.h or name:sub(1, 1) ~= "." then
+				local path = rel == "" and name or rel .. "/" .. name
+				if (folded and name:lower() or name):find(subject, 1, true) then
+					coroutine.yield(File { url = url:join(path), stat = f.stat, lstat = f.lstat, link_to = f.link_to })
+				end
+				if f.stat.is_dir and not f.lstat.is_link then
+					queue[#queue + 1] = path
+				end
+			end
+		end
+	end
 end
 
 function M.spawn(program, source, data)
