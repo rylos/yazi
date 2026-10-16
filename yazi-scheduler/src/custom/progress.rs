@@ -16,13 +16,14 @@ pub struct CustomProg {
 impl From<CustomProg> for TaskSummary {
 	fn from(value: CustomProg) -> Self {
 		Self {
-			total_tasks:     1,
+			total_tasks: 1,
 			succeeded_tasks: value.success() as u32,
-			failed_tasks:    value.failed() as u32,
-			total_items:     value.total,
+			failed_tasks: value.failed() as u32,
+			total_items: value.total,
 			succeeded_items: value.succeeded,
-			failed_items:    value.failed,
-			percent:         value.percent().map(Into::into),
+			failed_items: value.failed,
+			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }

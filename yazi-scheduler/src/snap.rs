@@ -6,8 +6,11 @@ use crate::{Task, TaskProg};
 pub struct TaskSnap {
 	pub title: String,
 	pub prog:  TaskProg,
+	pub speed: Option<u64>,
 }
 
 impl From<&Task> for TaskSnap {
-	fn from(task: &Task) -> Self { Self { title: task.title.clone(), prog: task.prog } }
+	fn from(task: &Task) -> Self {
+		Self { title: task.title.clone(), prog: task.prog, speed: task.meter.speed() }
+	}
 }

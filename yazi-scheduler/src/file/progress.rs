@@ -20,13 +20,14 @@ pub struct FileProgCopy {
 impl From<FileProgCopy> for TaskSummary {
 	fn from(value: FileProgCopy) -> Self {
 		Self {
-			total_tasks:     1,
+			total_tasks: 1,
 			succeeded_tasks: value.success() as u32,
-			failed_tasks:    value.failed() as u32,
-			total_items:     value.total_files,
+			failed_tasks: value.failed() as u32,
+			total_items: value.total_files,
 			succeeded_items: value.succeeded_files,
-			failed_items:    value.failed_files,
-			percent:         value.percent().map(Into::into),
+			failed_items: value.failed_files,
+			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -66,13 +67,14 @@ pub struct FileProgMove {
 impl From<FileProgMove> for TaskSummary {
 	fn from(value: FileProgMove) -> Self {
 		Self {
-			total_tasks:     1,
+			total_tasks: 1,
 			succeeded_tasks: value.success() as u32,
-			failed_tasks:    value.failed() as u32,
-			total_items:     value.total_files,
+			failed_tasks: value.failed() as u32,
+			total_items: value.total_files,
 			succeeded_items: value.succeeded_files,
-			failed_items:    value.failed_files,
-			percent:         value.percent().map(Into::into),
+			failed_items: value.failed_files,
+			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -107,13 +109,14 @@ pub struct FileProgLink {
 impl From<FileProgLink> for TaskSummary {
 	fn from(value: FileProgLink) -> Self {
 		Self {
-			total_tasks:     1,
+			total_tasks: 1,
 			succeeded_tasks: value.success() as u32,
-			failed_tasks:    value.failed() as u32,
-			total_items:     1,
+			failed_tasks: value.failed() as u32,
+			total_items: 1,
 			succeeded_items: value.cooked() as u64,
-			failed_items:    (value.state == Some(false)) as u64,
-			percent:         value.percent().map(Into::into),
+			failed_items: (value.state == Some(false)) as u64,
+			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -141,13 +144,14 @@ pub struct FileProgHardlink {
 impl From<FileProgHardlink> for TaskSummary {
 	fn from(value: FileProgHardlink) -> Self {
 		Self {
-			total_tasks:     1,
+			total_tasks: 1,
 			succeeded_tasks: value.success() as u32,
-			failed_tasks:    value.failed() as u32,
-			total_items:     value.total,
+			failed_tasks: value.failed() as u32,
+			total_items: value.total,
 			succeeded_items: value.succeeded,
-			failed_items:    value.failed,
-			percent:         value.percent().map(Into::into),
+			failed_items: value.failed,
+			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -182,13 +186,14 @@ impl Deref for FileProgDelete {
 impl From<FileProgDelete> for TaskSummary {
 	fn from(value: FileProgDelete) -> Self {
 		Self {
-			total_tasks:     1,
+			total_tasks: 1,
 			succeeded_tasks: value.success() as u32,
-			failed_tasks:    value.failed() as u32,
-			total_items:     value.total,
+			failed_tasks: value.failed() as u32,
+			total_items: value.total,
 			succeeded_items: value.succeeded,
-			failed_items:    value.failed,
-			percent:         value.percent().map(Into::into),
+			failed_items: value.failed,
+			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -217,13 +222,14 @@ pub struct FileProgTrash {
 impl From<FileProgTrash> for TaskSummary {
 	fn from(value: FileProgTrash) -> Self {
 		Self {
-			total_tasks:     1,
+			total_tasks: 1,
 			succeeded_tasks: value.success() as u32,
-			failed_tasks:    value.failed() as u32,
-			total_items:     1,
+			failed_tasks: value.failed() as u32,
+			total_items: 1,
 			succeeded_items: value.cooked() as u64,
-			failed_items:    (value.state == Some(false)) as u64,
-			percent:         value.percent().map(Into::into),
+			failed_items: (value.state == Some(false)) as u64,
+			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -253,13 +259,14 @@ pub struct FileProgDownload {
 impl From<FileProgDownload> for TaskSummary {
 	fn from(value: FileProgDownload) -> Self {
 		Self {
-			total_tasks:     1,
+			total_tasks: 1,
 			succeeded_tasks: value.success() as u32,
-			failed_tasks:    value.failed() as u32,
-			total_items:     value.total_files,
+			failed_tasks: value.failed() as u32,
+			total_items: value.total_files,
 			succeeded_items: value.succeeded_files,
-			failed_items:    value.failed_files,
-			percent:         value.percent().map(Into::into),
+			failed_items: value.failed_files,
+			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -299,13 +306,14 @@ pub struct FileProgUpload {
 impl From<FileProgUpload> for TaskSummary {
 	fn from(value: FileProgUpload) -> Self {
 		Self {
-			total_tasks:     1,
+			total_tasks: 1,
 			succeeded_tasks: value.success() as u32,
-			failed_tasks:    value.failed() as u32,
-			total_items:     value.total_files,
+			failed_tasks: value.failed() as u32,
+			total_items: value.total_files,
 			succeeded_items: value.succeeded_files,
-			failed_items:    value.failed_files,
-			percent:         value.percent().map(Into::into),
+			failed_items: value.failed_files,
+			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
