@@ -27,7 +27,11 @@ impl Tasks {
 			loop {
 				sleep(Duration::from_millis(500)).await;
 
-				let new = TaskSummary::from(&*ongoing.lock());
+				let new = {
+					let mut ongoing = ongoing.lock();
+					ongoing.measure();
+					TaskSummary::from(&*ongoing)
+				};
 				if last != new {
 					last = new;
 					AppProxy::update_progress(new);

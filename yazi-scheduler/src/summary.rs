@@ -13,6 +13,8 @@ pub struct TaskSummary {
 	pub(crate) succeeded_items: u64,
 	pub(crate) failed_items:    u64,
 	pub(crate) percent:         Option<OrderedFloat<f32>>,
+	pub(crate) speed:           u64,
+	pub(crate) left:            u64,
 }
 
 impl_data_any!(TaskSummary);
@@ -37,6 +39,13 @@ impl From<&Ongoing> for TaskSummary {
 			if let Some(p) = s.percent {
 				percent_sum += p.0 as f64;
 				percent_count += 1;
+			}
+
+			if let Some((processed, total)) = task.prog.transfer()
+				&& task.prog.running()
+			{
+				summary.speed += task.meter.speed().unwrap_or(0);
+				summary.left += total.saturating_sub(processed);
 			}
 
 			if task.prog.running() {

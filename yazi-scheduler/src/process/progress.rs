@@ -11,13 +11,14 @@ pub struct ProcessProgBlock {
 impl From<ProcessProgBlock> for TaskSummary {
 	fn from(value: ProcessProgBlock) -> Self {
 		Self {
-			total_tasks:     value.failed() as u32,
+			total_tasks: value.failed() as u32,
 			succeeded_tasks: 0,
-			failed_tasks:    value.failed() as u32,
-			total_items:     1,
+			failed_tasks: value.failed() as u32,
+			total_items: 1,
 			succeeded_items: value.success() as u64,
-			failed_items:    value.failed() as u64,
-			percent:         value.percent().map(Into::into),
+			failed_items: value.failed() as u64,
+			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -39,13 +40,14 @@ pub struct ProcessProgOrphan {
 impl From<ProcessProgOrphan> for TaskSummary {
 	fn from(value: ProcessProgOrphan) -> Self {
 		Self {
-			total_tasks:     value.failed() as u32,
+			total_tasks: value.failed() as u32,
 			succeeded_tasks: 0,
-			failed_tasks:    value.failed() as u32,
-			total_items:     1,
+			failed_tasks: value.failed() as u32,
+			total_items: 1,
 			succeeded_items: value.success() as u64,
-			failed_items:    value.failed() as u64,
-			percent:         value.percent().map(Into::into),
+			failed_items: value.failed() as u64,
+			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
@@ -67,13 +69,14 @@ pub struct ProcessProgBg {
 impl From<ProcessProgBg> for TaskSummary {
 	fn from(value: ProcessProgBg) -> Self {
 		Self {
-			total_tasks:     1,
+			total_tasks: 1,
 			succeeded_tasks: value.success() as u32,
-			failed_tasks:    value.failed() as u32,
-			total_items:     1,
+			failed_tasks: value.failed() as u32,
+			total_items: 1,
 			succeeded_items: value.success() as u64,
-			failed_items:    value.failed() as u64,
-			percent:         value.percent().map(Into::into),
+			failed_items: value.failed() as u64,
+			percent: value.percent().map(Into::into),
+			..Default::default()
 		}
 	}
 }
